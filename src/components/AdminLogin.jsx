@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 import { api } from '../api';
+import AdminOtp from './AdminOtp';
 import './AdminLogin.css';
 
 function AdminLogin({ onAdminLoginSuccess }) {
@@ -13,6 +14,8 @@ function AdminLogin({ onAdminLoginSuccess }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState('credentials');
+  const [pendingAdmin, setPendingAdmin] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,11 +28,8 @@ function AdminLogin({ onAdminLoginSuccess }) {
         return;
       }
       if (data?.success) {
-        try {
-          if (data.admin) localStorage.setItem('digilync_admin', JSON.stringify(data.admin));
-          localStorage.setItem('digilync_admin_session', '1');
-        } catch (_) {}
-        onAdminLoginSuccess?.();
+        setPendingAdmin(data.admin || null);
+        setStep('otp');
       } else {
         setError(data?.error || 'Login failed');
       }
@@ -39,6 +39,29 @@ function AdminLogin({ onAdminLoginSuccess }) {
       setLoading(false);
     }
   };
+
+  const handleOtpVerified = () => {
+    try {
+      if (pendingAdmin) localStorage.setItem('digilync_admin', JSON.stringify(pendingAdmin));
+      localStorage.setItem('digilync_admin_session', '1');
+    } catch (_) {}
+    onAdminLoginSuccess?.();
+  };
+
+  const handleOtpBack = () => {
+    setStep('credentials');
+    setPendingAdmin(null);
+    setError('');
+  };
+
+  if (step === 'otp') {
+    return (
+      <AdminOtp
+        onVerified={handleOtpVerified}
+        onBack={handleOtpBack}
+      />
+    );
+  }
 
   return (
     <div className="admin-login-page">

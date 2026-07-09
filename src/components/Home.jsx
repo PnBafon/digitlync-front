@@ -79,6 +79,38 @@ const NAV_MOBILE = [
   { id: 'footer', label: 'Contact' },
 ];
 
+const HERO_BRAND_TEXT = 'Digilync';
+
+function TypewriterBrand({ text = HERO_BRAND_TEXT, className }) {
+  const [display, setDisplay] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timer;
+
+    if (!isDeleting && display.length < text.length) {
+      timer = setTimeout(() => setDisplay(text.slice(0, display.length + 1)), 110);
+    } else if (!isDeleting && display.length === text.length) {
+      timer = setTimeout(() => setIsDeleting(true), 1600);
+    } else if (isDeleting && display.length > 0) {
+      timer = setTimeout(() => setDisplay(text.slice(0, display.length - 1)), 75);
+    } else if (isDeleting && display.length === 0) {
+      timer = setTimeout(() => setIsDeleting(false), 500);
+    }
+
+    return () => clearTimeout(timer);
+  }, [display, isDeleting, text]);
+
+  return (
+    <span className={className} aria-label={text}>
+      <span aria-hidden="true">
+        {display}
+        <span className="hero-brand-cursor">|</span>
+      </span>
+    </span>
+  );
+}
+
 function Home({ onAdminLoginSuccess }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null); // 'platform' | 'about' | null
@@ -238,7 +270,7 @@ function Home({ onAdminLoginSuccess }) {
             <span className="hero-dot hero-dot-1" /><span className="hero-dot hero-dot-2" /><span className="hero-dot hero-dot-3" /><span className="hero-dot hero-dot-4" />
           </div>
           <h1 className="hero-title hero-title-stagger">
-            <span className="hero-brand hero-brand-char">Digilync</span>
+            <TypewriterBrand className="hero-brand hero-brand-char" />
             <span className="hero-tagline hero-tagline-stagger">Africa's Agricultural Coordination & Intelligence Infrastructure</span>
           </h1>
           <p className="hero-subheadline">

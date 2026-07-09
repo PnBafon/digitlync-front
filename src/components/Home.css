@@ -16,6 +16,9 @@
   --dl-earth-brown-light: #8D6E63;
   --dl-blue-subtle: #1976D2;
   --dl-blue-light: #42A5F5;
+  --dl-blue-cool: #38BDF8;
+  --dl-blue-cool-mid: #3B82F6;
+  --dl-blue-cool-deep: #1D4ED8;
   --dl-white: #FFFFFF;
   --dl-text-dark: #1B5E20;
   --dl-text-muted: #558B2F;
@@ -669,12 +672,31 @@
 }
 
 .hero-brand {
+  display: inline-block;
+  align-self: center;
+  width: max-content;
   font-size: clamp(3rem, 7vw, 4.5rem);
   font-weight: 800;
-  color: var(--dl-white);
   letter-spacing: -0.04em;
-  line-height: 1.05;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4), 0 4px 40px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+  color: var(--dl-white);
+  background: linear-gradient(135deg, var(--dl-blue-cool-mid) 0%, var(--dl-blue-cool-deep) 100%);
+  padding: 0.04em 0.1em;
+  border-radius: 0;
+  box-sizing: content-box;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+.hero-brand-cursor {
+  display: inline-block;
+  margin-left: 0.02em;
+  font-weight: 400;
+  animation: hero-brand-cursor-blink 0.75s step-end infinite;
+}
+
+@keyframes hero-brand-cursor-blink {
+  50% { opacity: 0; }
 }
 
 .hero-tagline {
@@ -1031,7 +1053,6 @@
 
 /* Hero title stagger - subtle letter animation */
 .hero-title-stagger .hero-brand {
-  display: inline-block;
   animation: hero-brand-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
 }
 
