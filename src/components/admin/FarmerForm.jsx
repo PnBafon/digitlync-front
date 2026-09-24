@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../api';
+import { showToast } from '../Toaster';
 import MapPicker from './MapPicker';
 import { CROPS, FARMER_SERVICE_NEEDS, COUNTRIES, REGIONS_CAMEROON, REGIONS_GENERIC, DIVISIONS_SAMPLE, DISTRICTS_SAMPLE, SOIL_TYPES, IRRIGATION_TYPES, PLANTING_SEASONS, MONTHS, LAND_OWNERSHIP, MECHANIZATION_LEVELS } from '../../constants/lookups';
 import './FarmerForm.css';
@@ -144,8 +145,17 @@ function FarmerForm({ farmer, onSuccess, onCancel }) {
       ? await api.updateFarmer(farmer.id, payload)
       : await api.createFarmer(payload);
     setSaving(false);
-    if (err) setError(err);
-    else onSuccess?.(data);
+    if (err) {
+      setError(err);
+      return;
+    }
+    showToast(
+      isEdit
+        ? 'Farmer updated successfully.'
+        : `${payload.full_name} has been added as a farmer.`,
+      { type: 'success' }
+    );
+    onSuccess?.(data);
   };
 
   return (

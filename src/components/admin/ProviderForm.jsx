@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import MapPicker from './MapPicker';
 import { api } from '../../api';
+import { showToast } from '../Toaster';
 import { FARMER_SERVICE_NEEDS, COUNTRIES, REGIONS_CAMEROON, REGIONS_GENERIC, DIVISIONS_SAMPLE, DISTRICTS_SAMPLE, EQUIPMENT_CONDITION, FUEL_TYPES } from '../../constants/lookups';
 import './ProviderForm.css';
 
@@ -191,8 +192,17 @@ function ProviderForm({ provider, onSuccess, onCancel }) {
       ? await api.updateProvider(provider.id, payload)
       : await api.createProvider(payload);
     setSaving(false);
-    if (err) setError(err);
-    else onSuccess?.(data);
+    if (err) {
+      setError(err);
+      return;
+    }
+    showToast(
+      isEdit
+        ? 'Provider updated successfully.'
+        : `${payload.full_name} has been added as a provider.`,
+      { type: 'success' }
+    );
+    onSuccess?.(data);
   };
 
   const regions = (s) => (s?.country === 'Cameroon' ? REGIONS_CAMEROON : s?.country ? REGIONS_GENERIC : []);
